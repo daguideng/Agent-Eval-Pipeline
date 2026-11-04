@@ -3,6 +3,12 @@
 ## 📖 项目简介
 本项目针对大模型 Agent 在 ToB/ToC 落地中出现的“幻觉、不确定性、性能黑盒”等问题，基于 **LangGraph + LangFuse + LLM-as-a-Judge** 技术栈，从 0 到 1 独立研发的自动化评测与底层性能监控流水线。
 
+## 💻 环境要求
+- **Python**: `>= 3.13` (本项目在 Python 3.13.12 环境下开发并测试通过)
+- **依赖包**: 详见 `requirements.txt`
+- **模型服务**: 本地需运行 Ollama 并拉取 `qwen2.5:3b` 模型
+- **监控平台**: 本地需部署 LangFuse 服务 (默认监听 `http://localhost:3000`)
+
 ## ✨ 核心亮点
 - **单次流式无侵入监控**：利用 LangChain `CallbackHandler` 底层拦截，在单次请求中精准计算 **TTFT (首字延迟)** 与 **TPOT (每字生成时间)**，不浪费任何额外 Token。
 - **多维裁判打分**：接入 DeepSeek 作为裁判模型，对 Agent 输出进行准确度、相关性、安全性等 Rubric 打分。
@@ -19,11 +25,9 @@
 ## 🚀 快速开始
 1. 安装依赖: `pip install -r requirements.txt`
 2. 配置环境变量: 复制 `.env.example` 为 `.env` 并填入你的 LangFuse 和 DeepSeek 密钥。
-3. 确保本地运行了 Ollama (`qwen2.5:3b`) 与 LangFuse 服务。
-4. 运行测试: `python test_runner.py`
+3. 运行测试: `python test_runner.py`
 
 ## 📊 运行效果展示
-
 ==================================================
 🚀 Start Case [1], Query: 帮我查一下北京今天的天气，如果气温低于10度，就帮我调用接口打开办公室的暖气。
 🚨 [底层抓取] 大模型触发了工具: get_weather, 参数: 北京
