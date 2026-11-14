@@ -1,3 +1,6 @@
+
 .env
 __pycache__/
 evaluation_report.md
+compare_report.md
+config.py
