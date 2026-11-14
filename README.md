@@ -15,10 +15,39 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 <br />
-
-![Dashboard Demo](https://via.placeholder.com/1000x500.png?text=Replace+with+your+Streamlit+Screenshot)
-<img width="2409" height="888" alt="image" src="https://github.com/user-attachments/assets/7c37845a-2ca9-4bd3-a483-c7e0418a25ed" />
 </div>
+
+## 📸 效果展示 (Showcase)
+
+### 1. 自动化基准测试执行（终端日志）
+系统不仅调用 Agent，还会拦截恶意请求、评估工具调用轨迹，并精准裁判打分。
+<img width="1895" height="996" alt="image" src="https://github.com/user-attachments/assets/1d58ab42-475d-41ce-9d38-deb5ae44f3f9" />
+
+### 2. 多维差异与置信区间决策
+系统通过 Bootstrap 重采样和加权计算，直接给出“是否发布”的最终结论。
+<img width="1281" height="1211" alt="image" src="https://github.com/user-attachments/assets/c73641fb-26a8-496a-a2da-bba64a4cab14" />
+
+### 3. 可视化 Web 数据大盘
+一键启动，实时读取 MySQL 统计数据，直观展示各维度胜负。
+<img width="2532" height="1209" alt="image" src="https://github.com/user-attachments/assets/bb553355-1b77-4e0e-b9c0-f628bd11e63f" />
+
+
+
+### 4. 深度集成 Langfuse 全链路追踪
+底层无缝接入 Langfuse。每一次测试的各个维度得分、忠实度（Faithfulness）、幻觉检测（Hallucination）等细粒度指标全部自动入库，支持按任意维度聚合与可视化下钻。
+<img width="2534" height="1320" alt="image" src="https://github.com/user-attachments/assets/a15b8109-dd37-47f8-b7e9-9ff05ebbafb6" />
+
+
+#### 4.1 裁判归因分析下钻 (LLM-Judge)
+不仅给出分数，更通过底层 Prompt 约束，强制裁判模型输出详细的 JSON 格式归因分析（Reason），让每一个扣分点都有据可查。
+<img width="2559" height="1341" alt="image" src="https://github.com/user-attachments/assets/3e864950-1715-4ff3-a15f-f0449b5d18e2" />
+
+
+#### 4.2 Agent 性能与链路瀑布图 (Agent-Response)
+深度捕获每一次大模型调用的 TTFT（首字延迟）、TPOT（每字耗时）及 Token 消耗，配合树状 Trace 结构，让性能瓶颈无所遁形。
+<img width="2541" height="1329" alt="image" src="https://github.com/user-attachments/assets/04268d36-0bcc-4de8-9744-7525a79ae493" />
+
+
 
 ---
 
@@ -64,16 +93,17 @@ Agent-Eval-Pipeline/
 ├── Dockerfile                # 🐳 Docker 容器配置
 ├── docker-compose.yml        # 🐳 一键启动配置
 └── README.md                 # 📖 项目说明
-🚀 快速开始 (Quick Start)
-1. 本地安装
-bash
+## 🚀 快速开始 (Quick Start)
+
+ 1. 本地安装
+```bash
 # 克隆仓库并切换至开发分支
 git clone -b ai_model_v6 https://github.com/daguideng/Agent-Eval-Pipeline.git
 cd Agent-Eval-Pipeline
 
 # 安装所需依赖
 pip install -r requirements.txt
-2. 配置环境变量
+###2. 配置环境变量
 复制 .env.example 为 .env，并填入你的 API Key：
 
 env

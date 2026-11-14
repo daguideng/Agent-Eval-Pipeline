@@ -9,3 +9,4 @@ pymysql
 numpy
 scipy
 pandas
+plotly
