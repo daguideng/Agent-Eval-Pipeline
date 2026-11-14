@@ -16,7 +16,7 @@
 
 <br />
 
-*( 💡 建议：在此处拖拽上传一张你的 `web_app.py` 界面截图，或 `compare_report.md` 的精美截图，展示给访客 )*
+![Dashboard Demo](https://via.placeholder.com/1000x500.png?text=Replace+with+your+Streamlit+Screenshot)
 
 </div>
 
