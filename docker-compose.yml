@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  eval-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ai_evaluator
+      MYSQL_USER: appium
+      MYSQL_PASSWORD: nopass.88888888
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./old.sql:/docker-entrypoint-initdb.d/init.sql # 自动建表
+
+  # Web 可视化界面
+  eval-web:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - DB_HOST=eval-db
+      - DB_USER=appium
+      - DB_PASS=nopass.88888888
+      - DB_NAME=ai_evaluator
+    depends_on:
+      - eval-db
+    command: streamlit run web_app.py --server.port=8501 --server.address=0.0.0.0
+
+  # 命令行测试运行器
+  eval-runner:
+    build: .
+    environment:
+      - DB_HOST=eval-db
+      - DB_USER=appium
+      - DB_PASS=nopass.88888888
+      - DB_NAME=ai_evaluator
+    depends_on:
+      - eval-db
+    command: tail -f /dev/null # 保持容器运行，方便进入执行 python compare_runner.py
