@@ -104,13 +104,20 @@ cd Agent-Eval-Pipeline
 # 安装所需依赖
 pip install -r requirements.txt
 ###2. 配置环境变量
-复制 .env.example 为 .env，并填入你的 API Key：
+# 复制示例配置文件为真实配置文件
+cp config.example.py config.py
 
-env
+# 复制环境变量模板
+cp .env.example .env 并填入你的 API Key：
+
+.env
 LANGFUSE_PUBLIC_KEY=your_public_key
 LANGFUSE_SECRET_KEY=your_secret_key
 DEEPSEEK_API_KEY=your_deepseek_api_key
+
 # DB_HOST, DB_USER 等配置在 config.py 中修改
+最后，打开 config.py，修改里面的 MySQL 数据库连接信息（DB_HOST, DB_USER, DB_PASS 等）
+
 3. Docker 一键部署 (强烈推荐)
 无需本地配环境，直接一键拉起 MySQL 和 Web 界面：
 
