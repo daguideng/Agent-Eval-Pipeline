@@ -1,9 +1,41 @@
-#version: '3.8'
+version: '3.8'
 
 services:
-  # MySQL 数据库
+  # ==========================================
+  # 1. Ollama 靶机服务 (运行被测大模型)
+  # ==========================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: eval-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./data/ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h # 保持模型常驻内存，避免每次测试冷启动
+
+  # ==========================================
+  # 2. Ollama 模型初始化 (自动拉取模型)
+  # ==========================================
+  ollama-pull:
+    image: ollama/ollama:latest
+    container_name: eval-ollama-pull
+    depends_on:
+      - ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: >
+      /bin/sh -c "
+      sleep 3;
+      OLLAMA_HOST=ollama:11434 /bin/ollama pull $${TARGET_MODEL_NAME:-qwen2.5:3b};
+      "
+
+  # ==========================================
+  # 3. MySQL 数据库
+  # ==========================================
   eval-db:
     image: mysql:8.0
+    container_name: eval-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: ai_evaluator
@@ -12,11 +44,15 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./old.sql:/docker-entrypoint-initdb.d/init.sql # 自动建表
+      - ./old.sql:/docker-entrypoint-initdb.d/init.sql # 自动执行建表
+      - ./data/mysql_data:/var/lib/mysql
 
-  # Web 可视化界面
+  # ==========================================
+  # 4. Web 可视化界面 (Streamlit)
+  # ==========================================
   eval-web:
     build: .
+    container_name: eval-web
     ports:
       - "8501:8501"
     environment:
@@ -24,18 +60,38 @@ services:
       - DB_USER=appium
       - DB_PASS=nopass.88888888
       - DB_NAME=ai_evaluator
+      - OLLAMA_URL=http://ollama:11434
+      - TARGET_MODEL_NAME=qwen2.5:3b
     depends_on:
       - eval-db
+      - ollama
     command: streamlit run web_app.py --server.port=8501 --server.address=0.0.0.0
 
-  # 命令行测试运行器
+  # ==========================================
+  # 5. 命令行测试运行器 (Runner)
+  # ==========================================
   eval-runner:
     build: .
+    container_name: eval-runner
+    # 👇 这里的环境变量会强制覆盖本地 .env，确保容器内网络互通
     environment:
       - DB_HOST=eval-db
       - DB_USER=appium
       - DB_PASS=nopass.88888888
       - DB_NAME=ai_evaluator
+      - OLLAMA_URL=http://ollama:11434
+      - TARGET_MODEL_NAME=qwen2.5:3b
+      # 如果你的 Langfuse 跑在宿主机上，用这个地址可以跨容器访问宿主机
+      - LANGFUSE_HOST=http://host.docker.internal:3000
+    # 添加 extra_hosts 允许 Linux 识别 host.docker.internal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - eval-db
-    command: tail -f /dev/null # 保持容器运行，方便进入执行 python compare_runner.py
+      - ollama-pull
+    command: tail -f /dev/null
+
+# 数据卷持久化
+volumes:
+  ollama_data:
+  mysql_data:

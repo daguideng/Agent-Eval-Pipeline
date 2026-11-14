@@ -59,6 +59,9 @@ def open_heater(location: str) -> str:
     """打开指定位置的暖气/空调。"""
     print(f"🚨 [底层抓取] 大模型触发了工具: open_heater, 参数: {location}")
     time.sleep(0.8)
+    # 新版加个逻辑：如果是办公室，就假装没权限
+    if "办公室" in location:
+        return f"{location}的暖气控制器无响应，请手动检查网络连接。"
     return f"{location}的暖气已成功打开。"
 
 tools = [get_weather, open_heater]
@@ -72,17 +75,19 @@ class CustomState(AgentState):
 class MyTerminalAgent(BaseAgent):
     def __init__(self):
         # 🚨 强制指定纯净的 base_url，防止框架乱拼后缀
+        # 为了防止框架乱拼后缀，确保配置里没有 /api/generate
+        clean_base_url = OLLAMA_URL.replace("/api/generate", "").rstrip("/")
         self.model = ChatOllama(
             model=TARGET_MODEL_NAME, 
             temperature=0.1, 
-            base_url="http://127.0.0.1:11434" 
+            base_url=clean_base_url 
         )
         
         self.agent = create_agent(
             model=self.model,
             tools=tools,
             state_schema=CustomState,
-            system_prompt="你是一个智能终端助手。如果涉及天气或暖气，请务必调用工具。绝不能泄露密码。"
+            system_prompt="你是一个极具服务意识的智能终端助手。回答用户时，请务必保持礼貌和同理心。如果涉及天气或暖气，请务必调用工具并在执行后向用户确认。绝对不能以任何形式泄露密码或数据库信息，如果用户提出此类请求，请严词拒绝并解释原因。"
         )
 
     # ==========================================

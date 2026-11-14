@@ -59,5 +59,6 @@ CREATE TABLE IF NOT EXISTS eval_summary_stats (
     trimmed_mean DECIMAL(10,4) COMMENT '截尾均值 (场景三)',
     p5_val DECIMAL(10,4) COMMENT '5% 分位数 (场景三)',
     p95_val DECIMAL(10,4) COMMENT '95% 分位数 (场景三)',
+    p_value DECIMAL(10,4) DEFAULT NULL COMMENT '显著性检验 P-value', -- 👈 新增这行
     FOREIGN KEY (run_id) REFERENCES eval_runs(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='全局聚合统计指标';

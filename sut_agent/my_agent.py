@@ -9,6 +9,7 @@ from langchain_core.callbacks import BaseCallbackHandler
 from config import TARGET_MODEL_NAME, OLLAMA_URL
 from sut_agent.base_agent import BaseAgent
 
+
 load_dotenv(override=True)
 
 # ==========================================
@@ -22,6 +23,7 @@ class UltimateMetricsCallback(BaseCallbackHandler):
         self.tool_time = 0.0
         self._tool_start = 0.0
         self._ttft_list = []
+
 
     def on_llm_start(self, *args, **kwargs):
         self.llm_start_time = time.time()
@@ -72,10 +74,13 @@ class CustomState(AgentState):
 class MyTerminalAgent(BaseAgent):
     def __init__(self):
         # 🚨 强制指定纯净的 base_url，防止框架乱拼后缀
+        # 🚨 从配置文件中动态读取 OLLAMA_URL
+        # 为了防止框架乱拼后缀，确保配置里没有 /api/generate
+        clean_base_url = OLLAMA_URL.replace("/api/generate", "").rstrip("/")
         self.model = ChatOllama(
             model=TARGET_MODEL_NAME, 
             temperature=0.1, 
-            base_url="http://127.0.0.1:11434" 
+            base_url=clean_base_url 
         )
         
         self.agent = create_agent(

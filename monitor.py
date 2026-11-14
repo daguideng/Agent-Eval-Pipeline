@@ -1,4 +1,4 @@
-# monitor.py
+# monitor.py （完整代码）
 import requests
 import base64
 import uuid
@@ -11,15 +11,17 @@ from evaluator import extract_score, get_dimensions
 auth_str = f"{PUBLIC_KEY}:{SECRET_KEY}"
 auth_base64 = base64.b64encode(auth_str.encode('utf-8')).decode('utf-8')
 HEADERS = {"Authorization": f"Basic {auth_base64}", "Content-Type": "application/json"}
-
-# 当前配置档声明的维度清单
 DIMENSIONS = get_dimensions()
+
+# 🔥 新增：根据 trace_id 生成单条可点击的 Langfuse 链接
+def get_langfuse_url(trace_id):
+    if not trace_id:
+        return None
+    base_url = LANGFUSE_HOST.rstrip('/')
+    return f"{base_url}/trace/{trace_id}"
 
 def upload_metrics(case_id, query, final_answer, rule_msg, is_valid, judge_score,
                    llm_total_time, ttft, tpot, tool_exec_time, judge_time, token_drift):
-    """
-    注意：这里加入了 token_drift 参数，完美兼容 test_runner.py 的调用
-    """
     trace_id = str(uuid.uuid4())
     current_time = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())
 
@@ -55,7 +57,6 @@ def upload_metrics(case_id, query, final_answer, rule_msg, is_valid, judge_score
             clean_text = re.sub(r'```json\s*|\s*```', '', str(judge_score)).strip()
             data = json.loads(clean_text)
 
-            # 动态遍历维度写入分数
             for dim in DIMENSIONS:
                 dim_score = data.get(dim, {}).get("score", 0)
                 payload["batch"].append({
@@ -78,7 +79,6 @@ def upload_metrics(case_id, query, final_answer, rule_msg, is_valid, judge_score
         except Exception as e:
             print(f"[Monitor] JSON Parse Failed: {e}")
 
-        # 最终得分（加权+一票否决）
         payload["batch"].append({
             "id": str(uuid.uuid4()), "type": "score-create", "timestamp": current_time,
             "body": {"traceId": trace_id, "name": "Final_Score", "value": extract_score(judge_score)}
