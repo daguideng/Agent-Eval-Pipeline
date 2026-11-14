@@ -17,7 +17,7 @@
 <br />
 
 ![Dashboard Demo](https://via.placeholder.com/1000x500.png?text=Replace+with+your+Streamlit+Screenshot)
-
+<img width="2409" height="888" alt="image" src="https://github.com/user-attachments/assets/7c37845a-2ca9-4bd3-a483-c7e0418a25ed" />
 </div>
 
 ---
@@ -121,22 +121,17 @@ Conciseness	8.2	7.1	[-0.22, -0.09]	❌ 全在零左侧，新版确实更差
 🔥 新版整体加权总 Delta: +0.154
 🏁 综合决策建议：新版整体加权后是正收益，可以考虑发布。但需注意 Conciseness 维度出现退步，建议在下次迭代中优化 Prompt 啰嗦度。
 
-💼 企业级私有化与商业合作 (Commercial)
-本开源仓库提供了核心的评测算法、Bootstrap 统计逻辑与基础命令行工具。
+## 💼 商业合作与企业私有化部署 (Commercial)
 
-如果您是企业团队，需要以下高级能力，欢迎联系作者获取商业授权、定制开发与私有化部署服务：
+本开源仓库提供了核心的评测算法、Bootstrap 统计逻辑与基础 CLI 工具。如果您是企业团队，需要以下高级能力，欢迎联系作者获取商业授权、定制开发与私有化部署服务：
 
-📊 高级可视化 Web 数据看板：多团队管理、自动生成 PDF 汇报文档、拖拽式配置维度权重。
+*   📊 **高可用数据大盘**：多团队权限管理、定制化 PDF 测试报告导出、拖拽式权重配置。
+*   🏢 **企业级全家桶部署**：提供包含 Langfuse (ClickHouse/Redis/MinIO) 的完整高可用私有化部署方案，满足金融级数据合规要求。
+*   🛠️ **专属行业评测体系定制**：针对金融、医疗、政企等垂直领域，定制专属的 Judge Prompt 与防幻觉规则，及对接内部 Agent 接口。
 
-🏢 高可用私有化架构：提供完整的包含 Langfuse（ClickHouse/Redis/MinIO）的企业级高可用全家桶部署方案。
-
-🛠️ 定制化开发：对接贵司内部 Agent 接口、定制特定行业（金融/医疗）的 Judge Prompt 体系。
-
-📬 联系方式
-
-微信：wxid_2f5h1j7u0dm811 (添加请备注：GitHub 评测)
-
-邮箱：dengdagui8@qq.com
+**📬 联系方式**
+*   **微信**：`wxid_2f5h1j7u0dm811` (添加请备注：GitHub 评测)
+*   **邮箱**：`dengdagui8@qq.com`
 
 <div align="center"> <b>如果这个项目对你有帮助，请给个 ⭐️ Star 支持一下！</b> </div>
 📄 License
