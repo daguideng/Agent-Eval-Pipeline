@@ -96,35 +96,19 @@ docker-compose up -d --build
 一、 三种单机运行方法（单版本基准测试）
 如果你只想测试单个 Agent 的输出质量，请使用 test_runner.py，跑完的数据会自动打入 Langfuse 监控面板。
 
-运行模式	命令	特点说明
+运行模式	运行命令	特点说明
 通用质量 (5维)	python test_runner.py	默认加载。包含准确性、相关性、安全性等基础测试。
 Agent 专属 (8维)	EVAL_PROFILE=agent_specialty python test_runner.py	增加了工具调用准确率、上下文一致性等 Agent 特有维度。
 金融业务 (10维)	EVAL_PROFILE=business_finance python test_runner.py	增加了 RAG 忠实度、语气与情感等严苛金融维度。
 二、 三种对比方法（A/B 实验发布决策）
-如果你有 sut_agent (旧版 v7) 和 sut_agent_1 (新版 v8)，想判断新版能否上线，请使用 compare_runner.py。
+如果你有 sut_agent (旧版 v7) 和 sut_agent_1 (新版 v8)，想判断新版能否上线，请使用 compare_runner.py。同样支持三种维度的对比：
 
-方法 1：终端直观对比（极速查看）
-
-bash
-python compare_runner.py
-运行后，终端会直接渲染对比表格，自动计算每个维度的 Delta 和 95% 置信区间，并在底部直接输出 🔥 新版整体加权总 Delta 和 推荐/暂缓发布 的终极结论。
-
-方法 2：生成可视化 Markdown 报告（用于写周报/发邮件）
-每次运行结束后，根目录会自动生成 compare_report.md。
-你可以直接将这份报告发给老板，里面包含了直观的胜负标签（✅ 更好 / ❌ 更差 / ⚪ 无差异）以及大模型裁判针对每一项给出的具体理由（Reason）。
-
-方法 3：全量数据入库与 Web 看板（用于数据大盘）
-系统会自动将结果写入 MySQL 的 4 张表：
-
-eval_runs：批次宏观记录
-
-eval_case_details：明细用例
-
-eval_metrics：细粒度原始分与差值
-
-eval_summary_stats：核心统计表（包含截尾均值、分位数、Bootstrap 置信区间）
-
-只需运行 streamlit run web_app.py，就能在浏览器里看到高端的数据大盘。
+对比模式	运行命令	特点说明
+通用 A/B 对比	python compare_runner.py	默认加载通用 5 维，输出基础 A/B 差值统计。
+Agent A/B 对比	EVAL_PROFILE=agent_specialty python compare_runner.py	重点对比新旧版在“工具调用”和“上下文记忆”上的差异。
+金融 A/B 对比	EVAL_PROFILE=business_finance python compare_runner.py	重点对比新旧版在“RAG 幻觉”与“语气态度”上的差异。
+💡 对比结果去哪了？
+以上所有 A/B 对比命令运行结束后，系统会自动计算 Bootstrap 置信区间，在根目录生成 compare_report.md 详细分析报告，并将所有统计指标全量写入 MySQL 数据库（可通过 web_app.py 查看数据大盘）。
 
 📈 决策报告展示
 系统运行后，终端及 Markdown 报告中会生成如下分析：
