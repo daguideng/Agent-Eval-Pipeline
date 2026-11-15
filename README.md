@@ -189,3 +189,4 @@ Conciseness	8.2	7.1	[-0.22, -0.09]	❌ 全在零左侧，新版确实更差
 </div>
 📄 License
 This project is licensed under the MIT License.
+本仓库为社区开源版，适合单机体验。如遇复杂业务场景、内网环境部署或需要专业的 UI 大盘与多团队权限管理，请获取商业授权。
